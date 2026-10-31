@@ -2,471 +2,293 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#101827">
-  <title>FOCO APROVA | Painel de Estudos</title>
-
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #0b1220;
-      color: #f1f5f9;
-      min-height: 100vh;
-    }
-
-    header {
-      background: #111c2e;
-      padding: 22px 5%;
-      border-bottom: 1px solid #263449;
-    }
-
-    header h1 { color: #38bdf8; font-size: 27px; }
-    header p { color: #aab8ca; margin-top: 6px; }
-
-    main { width: 90%; max-width: 1100px; margin: 28px auto; }
-
-    .welcome { margin-bottom: 24px; }
-    .welcome h2 { font-size: 25px; margin-bottom: 8px; }
-    .welcome p { color: #aab8ca; }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .card {
-      background: #152238;
-      border: 1px solid #293b54;
-      border-radius: 13px;
-      padding: 20px;
-    }
-
-    .card h3 { margin-bottom: 13px; color: #7dd3fc; }
-    .number { font-size: 30px; font-weight: bold; margin: 8px 0; }
-    .muted { color: #aab8ca; font-size: 13px; }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      margin: 7px 0 12px;
-      border-radius: 8px;
-      border: 1px solid #40536d;
-      background: #0d1728;
-      color: white;
-      font-size: 15px;
-    }
-
-    button {
-      border: 0;
-      border-radius: 8px;
-      padding: 11px 15px;
-      background: #0284c7;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      margin: 4px 3px 4px 0;
-    }
-
-    button:hover { background: #0369a1; }
-    button.danger { background: #b91c1c; }
-    button.secondary { background: #475569; }
-
-    .task {
-      background: #0d1728;
-      padding: 12px;
-      border-radius: 8px;
-      margin: 8px 0;
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .task.done { opacity: .55; text-decoration: line-through; }
-
-    .progress {
-      height: 12px;
-      background: #334155;
-      border-radius: 20px;
-      overflow: hidden;
-      margin: 12px 0;
-    }
-
-    .progress div {
-      height: 100%;
-      width: 0;
-      background: #22c55e;
-      transition: width .3s;
-    }
-
-    .timer {
-      font-size: 48px;
-      font-weight: bold;
-      text-align: center;
-      margin: 15px 0;
-      color: #38bdf8;
-    }
-
-    .full { grid-column: 1 / -1; }
-
-    footer {
-      text-align: center;
-      color: #718096;
-      padding: 30px;
-      font-size: 13px;
-    }
-
-    @media(max-width: 600px) {
-      header h1 { font-size: 22px; }
-      main { width: 92%; }
-      .timer { font-size: 38px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOCO APROVA</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#101827;color:#fff}
+header{background:#17243a;padding:25px 15px;text-align:center;border-bottom:3px solid #d6a52c}
+header h1{margin:0;color:#f0bd3e;font-size:30px}
+header p{color:#cbd5e1}
+main{max-width:1000px;margin:auto;padding:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.card,.panel{background:#1d2b42;padding:18px;border-radius:12px;margin-bottom:15px}
+.card{text-align:center}
+.number{font-size:30px;color:#f0bd3e;font-weight:bold}
+h2{color:#f0bd3e;font-size:20px}
+input,select,button{width:100%;padding:12px;margin:6px 0;border-radius:7px;border:0;font-size:15px}
+input,select{background:#f1f5f9;color:#111}
+button{background:#d6a52c;color:#101827;font-weight:bold;cursor:pointer}
+button:hover{background:#f0bd3e}
+.task{background:#263750;padding:12px;border-radius:8px;margin:8px 0;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.task button{width:auto;margin:0;padding:8px}
+.done{text-decoration:line-through;opacity:.55}
+.progress{height:13px;background:#35445b;border-radius:20px;overflow:hidden}
+#progressBar{height:100%;width:0;background:#d6a52c}
+.timer{text-align:center;font-size:48px;font-weight:bold;color:#f0bd3e;margin:15px}
+.small{font-size:13px;color:#bdc8d8}
+footer{text-align:center;padding:25px;color:#94a3b8}
+</style>
 </head>
-
 <body>
-  <header>
-    <h1>FOCO APROVA</h1>
-    <p>Organize seus estudos. Acompanhe sua evolução. Alcance sua aprovação.</p>
-  </header>
-
-  <main>
-    <section class="welcome">
-      <h2>Seu painel de estudos</h2>
-      <p id="today"></p>
-    </section>
-
-    <section class="grid">
-      <div class="card">
-        <h3>📚 Tarefas cadastradas</h3>
-        <div class="number" id="totalTasks">0</div>
-        <p class="muted">Total de tarefas</p>
-      </div>
-
-      <div class="card">
-        <h3>✅ Tarefas concluídas</h3>
-        <div class="number" id="completedTasks">0</div>
-        <p class="muted">Atividades finalizadas</p>
-      </div>
-
-      <div class="card">
-        <h3>🎯 Questões resolvidas</h3>
-        <div class="number" id="totalQuestions">0</div>
-        <p class="muted">Questões registradas</p>
-      </div>
-
-      <div class="card">
-        <h3>📈 Aproveitamento</h3>
-        <div class="number" id="accuracy">0%</div>
-        <p class="muted">Percentual de acertos</p>
-      </div>
-    </section>
-
-    <section class="grid">
-      <div class="card">
-        <h3>📖 Adicionar estudo</h3>
-        <label for="subject">Matéria</label>
-        <input id="subject" placeholder="Ex.: Português">
-
-        <label for="topic">Conteúdo</label>
-        <input id="topic" placeholder="Ex.: Interpretação de texto">
-
-        <label for="studyDate">Data</label>
-        <input id="studyDate" type="date">
-
-        <button onclick="addTask()">Adicionar tarefa</button>
-      </div>
-
-      <div class="card">
-        <h3>📊 Progresso dos estudos</h3>
-        <p id="progressText">0% concluído</p>
-        <div class="progress"><div id="progressBar"></div></div>
-        <p class="muted">Conclua suas tarefas para aumentar o progresso.</p>
-      </div>
-
-      <div class="card">
-        <h3>⏱️ Cronômetro Pomodoro</h3>
-        <p class="muted">Ciclo de concentração de 25 minutos.</p>
-        <div class="timer" id="timer">25:00</div>
-        <button onclick="startTimer()">Iniciar</button>
-        <button class="secondary" onclick="pauseTimer()">Pausar</button>
-        <button class="danger" onclick="resetTimer()">Reiniciar</button>
-      </div>
-
-      <div class="card">
-        <h3>✍️ Registrar questões</h3>
-        <label for="questions">Quantidade de questões</label>
-        <input id="questions" type="number" min="1" placeholder="Ex.: 30">
-
-        <label for="correct">Quantidade de acertos</label>
-        <input id="correct" type="number" min="0" placeholder="Ex.: 24">
-
-        <button onclick="saveQuestions()">Salvar resultado</button>
-        <p class="muted" id="questionMessage"></p>
-      </div>
-    </section>
-
-    <section class="card full">
-      <h3>📝 Minha lista de estudos</h3>
-      <div id="taskList">
-        <p class="muted">Nenhuma tarefa cadastrada ainda.</p>
-      </div>
-    </section>
-
-    <section class="card full" style="margin-top:20px">
-      <h3>📂 Backup dos seus dados</h3>
-      <p class="muted">Exporte seus registros para guardar uma cópia.</p>
-      <button onclick="exportData()">Exportar dados</button>
-      <button class="secondary" onclick="document.getElementById('importFile').click()">Importar dados</button>
-      <input id="importFile" type="file" accept=".json,application/json" hidden onchange="importData(event)">
-      <button class="danger" onclick="clearData()">Apagar todos os dados</button>
-    </section>
-  </main>
-
-  <footer>
-    FOCO APROVA © 2026 — Sua disciplina constrói sua aprovação.
-  </footer>
-
-  <script>
-    const STORAGE_KEY = "focoAprovaDados";
-
-    let data = {
-      tasks: [],
-      questions: 0,
-      correct: 0
-    };
-
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed && Array.isArray(parsed.tasks)) {
-          data = {
-            tasks: parsed.tasks,
-            questions: Number(parsed.questions) || 0,
-            correct: Number(parsed.correct) || 0
-          };
-        }
-      }
-    } catch (error) {
-      console.error("Não foi possível carregar os dados:", error);
-    }
-
-    function saveData() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      render();
-    }
-
-    function addTask() {
-      const subject = document.getElementById("subject").value.trim();
-      const topic = document.getElementById("topic").value.trim();
-      const date = document.getElementById("studyDate").value;
-
-      if (!subject || !topic) {
-        alert("Preencha a matéria e o conteúdo.");
-        return;
-      }
-
-      data.tasks.push({
-        id: Date.now(),
-        subject,
-        topic,
-        date,
-        done: false
-      });
-
-      document.getElementById("subject").value = "";
-      document.getElementById("topic").value = "";
-      saveData();
-    }
-
-    function toggleTask(id) {
-      const task = data.tasks.find(item => item.id === id);
-      if (task) {
-        task.done = !task.done;
-        saveData();
-      }
-    }
-
-    function deleteTask(id) {
-      if (!confirm("Deseja excluir esta tarefa?")) return;
-      data.tasks = data.tasks.filter(item => item.id !== id);
-      saveData();
-    }
-
-    function saveQuestions() {
-      const questions = Number(document.getElementById("questions").value);
-      const correct = Number(document.getElementById("correct").value);
-
-      if (!Number.isInteger(questions) || questions < 1 ||
-          !Number.isInteger(correct) || correct < 0 ||
-          correct > questions) {
-        alert("Confira os números informados.");
-        return;
-      }
-
-      data.questions += questions;
-      data.correct += correct;
-
-      document.getElementById("questions").value = "";
-      document.getElementById("correct").value = "";
-      document.getElementById("questionMessage").textContent =
-        "Resultado registrado com sucesso!";
-
-      saveData();
-    }
-
-    function render() {
-      const total = data.tasks.length;
-      const completed = data.tasks.filter(task => task.done).length;
-      const percent = total ? Math.round(completed / total * 100) : 0;
-      const accuracy = data.questions
-        ? Math.round(data.correct / data.questions * 100)
-        : 0;
-
-      document.getElementById("totalTasks").textContent = total;
-      document.getElementById("completedTasks").textContent = completed;
-      document.getElementById("totalQuestions").textContent = data.questions;
-      document.getElementById("accuracy").textContent = accuracy + "%";
-      document.getElementById("progressText").textContent = percent + "% concluído";
-      document.getElementById("progressBar").style.width = percent + "%";
-
-      const list = document.getElementById("taskList");
-
-      if (!total) {
-        list.innerHTML = '<p class="muted">Nenhuma tarefa cadastrada ainda.</p>';
-        return;
-      }
-
-      list.innerHTML = "";
-
-      data.tasks.forEach(task => {
-        const item = document.createElement("div");
-        item.className = "task" + (task.done ? " done" : "");
-
-        const info = document.createElement("span");
-        info.textContent = task.subject + " — " + task.topic +
-          (task.date ? " | " + task.date : "");
-
-        const actions = document.createElement("div");
-
-        const finish = document.createElement("button");
-        finish.textContent = task.done ? "Desfazer" : "Concluir";
-        finish.onclick = () => toggleTask(task.id);
-
-        const remove = document.createElement("button");
-        remove.textContent = "Excluir";
-        remove.className = "danger";
-        remove.onclick = () => deleteTask(task.id);
-
-        actions.append(finish, remove);
-        item.append(info, actions);
-        list.appendChild(item);
-      });
-    }
-
-    function exportData() {
-      const file = new Blob(
-        [JSON.stringify(data, null, 2)],
-        { type: "application/json" }
-      );
-
-      const url = URL.createObjectURL(file);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "backup-foco-aprova.json";
-      link.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function importData(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        try {
-          const imported = JSON.parse(reader.result);
-
-          if (!imported || !Array.isArray(imported.tasks)) {
-            throw new Error("Arquivo inválido");
-          }
-
-          data = {
-            tasks: imported.tasks,
-            questions: Number(imported.questions) || 0,
-            correct: Number(imported.correct) || 0
-          };
-
-          saveData();
-          alert("Dados importados com sucesso!");
-        } catch (error) {
-          alert("Não foi possível importar esse arquivo.");
-        }
-
-        event.target.value = "";
-      };
-
-      reader.readAsText(file);
-    }
-
-    function clearData() {
-      if (!confirm("Tem certeza que deseja apagar todos os dados?")) return;
-
-      data = { tasks: [], questions: 0, correct: 0 };
-      saveData();
-    }
-
-    let seconds = 25 * 60;
-    let timerInterval = null;
-
-    function updateTimer() {
-      const minutes = Math.floor(seconds / 60);
-      const remaining = seconds % 60;
-
-      document.getElementById("timer").textContent =
-        String(minutes).padStart(2, "0") + ":" +
-        String(remaining).padStart(2, "0");
-    }
-
-    function startTimer() {
-      if (timerInterval !== null) return;
-
-      timerInterval = setInterval(() => {
-        if (seconds > 0) {
-          seconds--;
-          updateTimer();
-        } else {
-          clearInterval(timerInterval);
-          timerInterval = null;
-          alert("Parabéns! Seu ciclo de estudos terminou.");
-        }
-      }, 1000);
-    }
-
-    function pauseTimer() {
-      clearInterval(timerInterval);
-      timerInterval = null;
-    }
-
-    function resetTimer() {
-      pauseTimer();
-      seconds = 25 * 60;
-      updateTimer();
-    }
-
-    document.getElementById("today").textContent =
-      "Hoje: " + new Date().toLocaleDateString("pt-BR");
-
-    render();
-    updateTimer();
-  </script>
+
+<header>
+<h1>FOCO APROVA</h1>
+<p>Disciplina hoje. Aprovação amanhã.</p>
+</header>
+
+<main>
+<section class="cards">
+<div class="card">
+<div class="number" id="totalTasks">0</div>
+<div>Tarefas cadastradas</div>
+</div>
+<div class="card">
+<div class="number" id="completedTasks">0</div>
+<div>Tarefas concluídas</div>
+</div>
+<div class="card">
+<div class="number" id="totalQuestions">0</div>
+<div>Questões resolvidas</div>
+</div>
+<div class="card">
+<div class="number" id="accuracy">0%</div>
+<div>Taxa de acertos</div>
+</div>
+</section>
+
+<section class="panel">
+<h2>Meu progresso</h2>
+<div class="progress"><div id="progressBar"></div></div>
+<p id="progressText">0% concluído</p>
+</section>
+
+<section class="panel">
+<h2>Adicionar tarefa de estudo</h2>
+<input id="subject" placeholder="Matéria (ex.: Português)">
+<input id="content" placeholder="O que você vai estudar?">
+<input id="studyDate" type="date">
+<button onclick="addTask()">Adicionar tarefa</button>
+</section>
+
+<section class="panel">
+<h2>Minha lista de estudos</h2>
+<div id="taskList"></div>
+</section>
+
+<section class="panel">
+<h2>Registrar questões</h2>
+<input id="questions" type="number" min="1" placeholder="Quantidade de questões">
+<input id="correct" type="number" min="0" placeholder="Quantidade de acertos">
+<button onclick="saveQuestions()">Registrar resultado</button>
+<p class="small">Informe quantas questões resolveu e quantas acertou.</p>
+</section>
+
+<section class="panel">
+<h2>Cronômetro de estudos</h2>
+<div class="timer" id="timer">25:00</div>
+<button onclick="startTimer()">Iniciar</button>
+<button onclick="pauseTimer()">Pausar</button>
+<button onclick="resetTimer()">Reiniciar</button>
+<p class="small">Método Pomodoro: 25 minutos de foco.</p>
+</section>
+
+<section class="panel">
+<h2>Backup dos meus dados</h2>
+<button onclick="exportData()">Exportar backup</button>
+<input type="file" id="backupFile" accept=".json">
+<button onclick="importData()">Importar backup</button>
+<button onclick="clearData()" style="background:#b94a48;color:white">Apagar todos os dados</button>
+</section>
+</main>
+
+<footer>FOCO APROVA • Organização, disciplina e constância.</footer>
+
+<script>
+const STORAGE_KEY = "focoAprovaDados";
+
+let data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"tasks":[],"questions":0,"correct":0}');
+let seconds = 1500;
+let timerInterval = null;
+
+function saveData(){
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+ render();
+}
+
+function addTask(){
+ const subject=document.getElementById("subject").value.trim();
+ const content=document.getElementById("content").value.trim();
+ const date=document.getElementById("studyDate").value;
+
+ if(!subject || !content){
+  alert("Preencha a matéria e o conteúdo.");
+  return;
+ }
+
+ data.tasks.push({
+  id:Date.now(),
+  subject,
+  content,
+  date,
+  done:false
+ });
+
+ document.getElementById("subject").value="";
+ document.getElementById("content").value="";
+ document.getElementById("studyDate").value="";
+ saveData();
+}
+
+function finishTask(id){
+ const task=data.tasks.find(t=>t.id===id);
+ if(task) task.done=!task.done;
+ saveData();
+}
+
+function deleteTask(id){
+ data.tasks=data.tasks.filter(t=>t.id!==id);
+ saveData();
+}
+
+function saveQuestions(){
+ const q=Number(document.getElementById("questions").value);
+ const c=Number(document.getElementById("correct").value);
+
+ if(!Number.isInteger(q)||!Number.isInteger(c)||q<1||c<0||c>q){
+  alert("Confira os números informados.");
+  return;
+ }
+
+ data.questions+=q;
+ data.correct+=c;
+ document.getElementById("questions").value="";
+ document.getElementById("correct").value="";
+ saveData();
+}
+
+function render(){
+ const list=document.getElementById("taskList");
+ list.innerHTML="";
+
+ data.tasks.forEach(task=>{
+  const item=document.createElement("div");
+  item.className="task";
+
+  const info=document.createElement("div");
+  const title=document.createElement("strong");
+  title.textContent=task.subject+" — "+task.content;
+  if(task.done) title.className="done";
+  info.appendChild(title);
+
+  const date=document.createElement("div");
+  date.className="small";
+  date.textContent=task.date ? "Data: "+task.date : "";
+  info.appendChild(date);
+
+  const actions=document.createElement("div");
+  const doneBtn=document.createElement("button");
+  doneBtn.textContent=task.done?"Desfazer":"Concluir";
+  doneBtn.onclick=()=>finishTask(task.id);
+
+  const deleteBtn=document.createElement("button");
+  deleteBtn.textContent="Excluir";
+  deleteBtn.style.background="#b94a48";
+  deleteBtn.style.color="white";
+  deleteBtn.onclick=()=>deleteTask(task.id);
+
+  actions.append(doneBtn,deleteBtn);
+  item.append(info,actions);
+  list.appendChild(item);
+ });
+
+ if(data.tasks.length===0){
+  list.textContent="Nenhuma tarefa cadastrada ainda.";
+ }
+
+ const total=data.tasks.length;
+ const completed=data.tasks.filter(t=>t.done).length;
+ const progress=total ? Math.round(completed/total*100) : 0;
+
+ document.getElementById("totalTasks").textContent=total;
+ document.getElementById("completedTasks").textContent=completed;
+ document.getElementById("totalQuestions").textContent=data.questions;
+ document.getElementById("accuracy").textContent=
+  data.questions ? Math.round(data.correct/data.questions*100)+"%" : "0%";
+ document.getElementById("progressBar").style.width=progress+"%";
+ document.getElementById("progressText").textContent=progress+"% concluído";
+}
+
+function updateTimer(){
+ const min=Math.floor(seconds/60);
+ const sec=seconds%60;
+ document.getElementById("timer").textContent=
+  String(min).padStart(2,"0")+":"+String(sec).padStart(2,"0");
+}
+
+function startTimer(){
+ if(timerInterval) return;
+ timerInterval=setInterval(()=>{
+  if(seconds>0){
+   seconds--;
+   updateTimer();
+  }else{
+   pauseTimer();
+   alert("Parabéns! Você concluiu seu período de foco.");
+  }
+ },1000);
+}
+
+function pauseTimer(){
+ clearInterval(timerInterval);
+ timerInterval=null;
+}
+
+function resetTimer(){
+ pauseTimer();
+ seconds=1500;
+ updateTimer();
+}
+
+function exportData(){
+ const file=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(file);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="backup-foco-aprova.json";
+ a.click();
+ URL.revokeObjectURL(url);
+}
+
+function importData(){
+ const file=document.getElementById("backupFile").files[0];
+ if(!file){alert("Selecione um arquivo de backup.");return;}
+
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const imported=JSON.parse(reader.result);
+   if(!Array.isArray(imported.tasks)) throw new Error();
+   data=imported;
+   saveData();
+   alert("Backup importado!");
+  }catch(e){
+   alert("Arquivo de backup inválido.");
+  }
+ };
+ reader.readAsText(file);
+}
+
+function clearData(){
+ if(confirm("Tem certeza que deseja apagar todos os dados?")){
+  data={tasks:[],questions:0,correct:0};
+  saveData();
+ }
+}
+
+render();
+updateTimer();
+</script>
 </body>
 </html>
